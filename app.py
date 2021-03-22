@@ -1,12 +1,8 @@
-from flask import Flask
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
-
-
-@app.route('/')
-def flask_mongodb_atlas():
-    return "flask mongodb atlas!"
-
+cors = CORS(app)
 
 import db
 
@@ -23,6 +19,14 @@ def connect():
     return {
         'son': 'Obed'
     }
+
+
+@app.route("/processLink", methods=['GET', 'POST'])
+def processLink():
+    print("hi")
+    id = request.json
+    print(id['link'])
+    return f"The link received was {id['link']}"
 
 
 if __name__ == '__main__':
