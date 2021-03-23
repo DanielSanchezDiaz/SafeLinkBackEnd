@@ -7,7 +7,8 @@ from flask_pymongo import pymongo
 from app import app
 
 client = pymongo.MongoClient(
-    "mongodb+srv://TestUser:FakePassword@cluster0.uttgb.mongodb.net/Test-Database?retryWrites=true&w=majority",
-    ssl=True, ssl_cert_reqs='CERT_NONE')
-db = client.get_database('Test-Database')
-user_collection = pymongo.collection.Collection(db, 'user_collection')
+    "mongodb+srv://DanielSanchez:SafeLink123@topdomainnames.mj0ts.mongodb.net/DomainNames?retryWrites=true&w=majority",
+    )
+db = client.test
+client.server_info()
+#user_collection = pymongo.collection.Collection(db, 'user_collection')
