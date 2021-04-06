@@ -20,7 +20,6 @@ def getTopDomains():
     latest_list = t.list().top(10000)
     return latest_list
 
-
 def upDateDataBase():
     topDomainsCol = db.get_collection('TopDomainNames')
     domains = getTopDomains()

@@ -1,3 +1,4 @@
+from db import getAllDomains
 from urllib.parse import urlparse
 
 def find_combosquatting(url):
@@ -6,7 +7,7 @@ def find_combosquatting(url):
     false_trademark = domain.split('.')[1]
     
     print(f'DOMAIN: {domain} FALSE: {false_trademark}')
-    return is_substring(false_trademark, 'file')
+    return is_substring(false_trademark, 4,'database')
 
 
 def is_substring(false_domain_name, minimal_str_len = 4,source_list='database'):
@@ -20,7 +21,8 @@ def is_substring(false_domain_name, minimal_str_len = 4,source_list='database'):
     matches = []
     # compare with trademarks on database
     if source_list == 'database':
-      pass  
+        domain_dict = getAllDomains()
+        print(domain_dict)
 
     # combare with trademarks in file
     else:
