@@ -9,13 +9,15 @@ def find_combosquatting(url):
     return is_substring(false_trademark, 'file')
 
 
-def is_substring(false_domain_name, source_list='database'):
+def is_substring(false_domain_name, minimal_str_len = 4,source_list='database'):
     """
     Takes a false domain name and scans a file or database to check
     for registered trademarks of which the the false domain name is a substring and
-    returns a list containing any matches found.
+    returns a list containing any matches found whose length is less than 
+    minimal_str_len.
     """
 
+    matches = []
     # compare with trademarks on database
     if source_list == 'database':
       pass  
@@ -23,8 +25,8 @@ def is_substring(false_domain_name, source_list='database'):
     # combare with trademarks in file
     else:
         path =\
-             '/Users/obedababio/Documents/Spring 2021/CPSC 490/SafeLink/SafeLinkBackEnd/algorithms/combosquatting/top1m.txt'
-        matches = []
+             '/Users/obedababio/Documents/Spring 2021/CPSC 490/SafeLink/SafeLinkBackEnd/algorithms/combosquatting/topn.txt'
+        
 
         with open(path, 'r') as file:
             lines = []
