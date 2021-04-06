@@ -18,9 +18,6 @@ def updateDataBase():
 
 @app.route("/processLink", methods=['GET', 'POST'])
 def processLink():
-    db.getTopDomains()
-
-    db.upDateTopDomains()
     links = request.json
     firstLink = links[0].lower()
     parts = tldextract.extract(firstLink)
