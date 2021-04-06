@@ -9,7 +9,7 @@ from generateTypo import ts_models
 from tranco import Tranco
 
 client = pymongo.MongoClient(
-    "mongodb+srv://<nice try>:<nope>@topdomainnames.mj0ts.mongodb.net/DomainNames?retryWrites=true&w=majority",
+    "mongodb+srv://DanielSanchez:SafeLink@topdomainnames.mj0ts.mongodb.net/DomainNames?retryWrites=true&w=majority",
     ssl=True, ssl_cert_reqs='CERT_NONE')
 db = client.get_database('DomainNames')
 
@@ -46,3 +46,8 @@ def queryTypoSquat(link):
     typoCol = db.get_collection('TypoSquats')
     result = typoCol.find_one({'typo': link})
     return result
+
+
+def getAllDomains():
+    topDomainsCol = db.get_collection('TopDomainNames')
+    return list(topDomainsCol.find({}))
