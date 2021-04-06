@@ -18,6 +18,9 @@ def updateDataBase():
 
 @app.route("/processLink", methods=['GET', 'POST'])
 def processLink():
+    typoModel = ts_models()
+    typos = typoModel.generate_ts_domains("google.com")
+    print(typos.values())
     links = request.json
     firstLink = links[0].lower()
     parts = tldextract.extract(firstLink)

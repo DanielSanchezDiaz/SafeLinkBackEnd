@@ -33,7 +33,7 @@ def upDateDataBase():
         # Save the typos ***************
         typos = typoModel.generate_ts_domains(domain)
         for typ in typos:
-            for typo in typ:
+            for typo in typos[typ]:
                 entry = {"_id": str(typoId), "typo": typo, "domain": domain}
                 typoCol.save(entry)
                 typoId += 1
