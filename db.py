@@ -24,7 +24,7 @@ def getTopDomains():
 def upDateDataBase():
     topDomainsCol = db.get_collection('TopDomainNames')
     domains = getTopDomains()
-    i = 0
+    i = 1
     typoCol = db.get_collection('TypoSquats')
     typoModel = ts_models()
     typoId = 1

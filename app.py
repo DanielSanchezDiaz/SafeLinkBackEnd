@@ -14,7 +14,7 @@ cors = CORS(app)
 @app.cli.command()
 def updateDataBase():
     """Gets top domains from tranco and updates the db with typos and top domain names"""
-    db.upDateDataBa
+    db.upDateDataBase()
     print("Updated Data base!")
 
 
