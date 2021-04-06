@@ -5,12 +5,18 @@ import certifi
 from flask import Flask
 from flask_pymongo import pymongo
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 from app import app
 from generateTypo import ts_models
 from tranco import Tranco
 >>>>>>> 31d3224aebb7dae3f162940129c05195bf235779
+=======
+from app import app
+from generateTypo import ts_models
+from tranco import Tranco
+>>>>>>> 0268f793d1778c8a4124a444705382397b10c44d
 
 client = pymongo.MongoClient(
     "mongodb+srv://<nice try>:<nope>@topdomainnames.mj0ts.mongodb.net/DomainNames?retryWrites=true&w=majority",
@@ -28,7 +34,7 @@ def getTopDomains():
 def upDateDataBase():
     topDomainsCol = db.get_collection('TopDomainNames')
     domains = getTopDomains()
-    i = 0
+    i = 1
     typoCol = db.get_collection('TypoSquats')
     typoModel = ts_models()
     typoId = 1
