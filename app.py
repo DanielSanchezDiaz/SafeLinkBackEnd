@@ -1,3 +1,4 @@
+from algorithms.combosquatting import find_combosquatting
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from generateTypo import ts_models
@@ -6,7 +7,8 @@ import tldextract
 app = Flask(__name__)
 cors = CORS(app)
 
-import db
+# import db
+
 
 
 @app.cli.command()
