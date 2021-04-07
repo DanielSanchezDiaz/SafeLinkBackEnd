@@ -1,8 +1,14 @@
-from ... import db
+import os
+import sys
+from SafeLinkBackEnd import db
 from urllib.parse import urlparse
 import tldextract
 
 def find_combosquatting(url):
+    """
+    takes a url and returns a list of trademarks the url
+    may be trying to combosquat.
+    """
     
     domain = urlparse(url).netloc
     false_trademark = domain.split('.')[1]

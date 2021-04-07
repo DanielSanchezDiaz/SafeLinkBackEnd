@@ -1,8 +1,7 @@
-
 from algorithms.combosquatting.combosquatting import find_combosquatting
 from flask_cors import CORS
 import tldextract
-
+from generateTypo import ts_model
 app = Flask(__name__)
 cors = CORS(app)
 
