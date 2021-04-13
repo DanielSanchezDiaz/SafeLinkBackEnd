@@ -1,0 +1,4 @@
+Usage: flask [OPTIONS] COMMAND [ARGS]...
+Try 'flask --help' for help.
+
+Error: No such command 'updatedatabase'.
