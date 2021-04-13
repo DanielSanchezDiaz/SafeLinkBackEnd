@@ -1,7 +1,5 @@
-import os
-import sys
-from SafeLinkBackEnd import db
 from urllib.parse import urlparse
+from SafeLinkBackEnd import db
 import tldextract
 
 def find_combosquatting(url):
