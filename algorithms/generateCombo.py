@@ -25,13 +25,12 @@ def is_substring(false_domain_name, minimal_str_len = 4):
     matches = []
     # combare with trademarks in file
     path =\
-            '/Users/obedababio/Documents/Spring 2021/CPSC 490/SafeLink/SafeLinkBackEnd/file_database/trademarks.txt'
+            'file_database/trademarks.txt'
     custom_file = open(path, 'r')
     lines = custom_file.readlines()
     for string in lines:
         #trademark_name = tldextract.extract(string).domain
         trademark_name = string.rstrip()
-        print(f'is {trademark_name} in {false_domain_name}?')
         if trademark_name in false_domain_name and trademark_name != false_domain_name:
             matches.append(trademark_name)
 
@@ -41,6 +40,6 @@ def is_substring(false_domain_name, minimal_str_len = 4):
 
 
 
-print(find_combosquatting('http://www.somethingpepsisomething.test/foo/bar'))
+#print(find_combosquatting('http://www.somethingpepsisomething.test/foo/bar'))
 
 

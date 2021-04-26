@@ -1,10 +1,12 @@
 from flask_cors import CORS
-from . import checks_hub
+import checks_hub
 from flask import Flask
-import db
+from flask import request
 
 app = Flask(__name__)
 cors = CORS(app)
+
+import db
 
 
 @app.cli.command()
@@ -16,9 +18,9 @@ def updateDataBase():
 
 @app.route("/processLink", methods=['GET', 'POST'])
 def processLink():
-    results = checks_hub.main_security
+    url = request.json['domain_name']
+    results = checks_hub.main_security(url)
     # CONVERT TO NECESSARY FORMAT AND RETURN AS RESPONSE TO API CALL
-
     return results
 
 
