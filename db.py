@@ -1,6 +1,7 @@
 from flask_pymongo import pymongo
 from algorithms.generateTypo import ts_models
 from algorithms.generateSound import Homophones
+from idn_homographs_database.homograph import homograph
 from tranco import Tranco
 
 client = pymongo.MongoClient(
@@ -22,9 +23,11 @@ def upDateDataBase():
     i = 1
     typoCol = db.get_collection('TypoSquats')
     soundcol = db.get_collection('SoundSquats')
+    homoCol = db.get_collection('HomographSquats')
     typoModel = ts_models()
     homoModel = Homophones('file_database/homophone_list', 'file_database/wordlists/wordsEn.txt')
     typoId = 1
+    soundId = 1
     homoId = 1
     for domain in domains:
         entry = {"_id": str(i), "domain": domain}
@@ -36,15 +39,32 @@ def upDateDataBase():
                 entry = {"_id": str(typoId), "typo": typo, "domain": domain}
                 typoCol.save(entry)
                 typoId += 1
+        print("Typo saved")
         # *******************************
-        homos = homoModel.find_h_domains_single(domain)
-        for squat in homos["soudsquatting_single"]:
-            entry = {"_id": str(homoId), "squat": squat[0], "domain": domain}
+        soundSquats = homoModel.find_h_domains_single(domain)
+        for squat in soundSquats["soudsquatting_single"]:
+            entry = {"_id": str(soundId), "squat": squat[0], "domain": domain}
             soundcol.save(entry)
-            homoId += 1
-        for squat in homos["soudsquatting_double"]:
-            entry = {"_id": str(homoId), "squat": squat[0], "domain": domain}
+            soundId += 1
+        for squat in soundSquats["soudsquatting_double"]:
+            entry = {"_id": str(soundId), "squat": squat[0], "domain": domain}
             soundcol.save(entry)
+            soundId += 1
+        print("Soundsquatting done")
+        # ******************************** Homograph Squatting
+        print("no homo")
+        parts = domain.split('.')
+        name = parts[0]
+        suffix = parts[1]
+        suffix = '.' + suffix
+        homograph_generator = homograph.generate_similar_strings(name)
+        print("Generating homos for " + name)
+        for j in range(10):
+            # Let's generate ten homograph squats
+            squat = next(homograph_generator) + suffix
+            entry = {"_id": str(homoId), "squat": squat, "domain": domain}
+            homoCol.save(entry)
+            print(f"The entry saved is {entry}")
             homoId += 1
         i += 1
 
@@ -63,4 +83,10 @@ def getAllDomains():
 def querySoundSquat(link):
     soundCol = db.get_collection('SoundSquats')
     result = soundCol.find_one({'squat': link})
+    return result
+
+
+def queryHomoSquat(link):
+    homoCol = db.get_collection('HomographSquats')
+    result = homoCol.find_one({'squat': link})
     return result

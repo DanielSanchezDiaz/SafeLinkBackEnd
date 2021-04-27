@@ -53,15 +53,24 @@ def sound_squatting(url, json_response_dict):
     json_response_dict["soundSquatting"] = result
 
 
+def homograph_squatting(url, json_response_dict):
+    parts = tldextract.extract(url)
+    cl_domain = [parts.domain, '.' + parts.suffix]
+    f_clean_domain = ''.join(cl_domain)
+    result = db.queryHomoSquat(f_clean_domain)
+    if result:
+        json_response_dict["STATUS"] = "FAILED"
+    json_response_dict["homographSquatting"] = result
+
+
 def detect_new_domains(url, json_response_dict):
     # Things to do
         # cache result of rdap query, with date you got it
         # check in database if you have record for this already
 
-    #parts = tldextract.extract(url)
-    #cl_domain = [parts.domain, '.' + parts.suffix]
-    #f_clean_domain = ''.join(cl_domain)
-    f_clean_domain = "youtube.com"
+    parts = tldextract.extract(url)
+    cl_domain = [parts.domain, '.' + parts.suffix]
+    f_clean_domain = ''.join(cl_domain)
     info = requests.get("https://www.rdap.net/domain/"+f_clean_domain).json()
     # This should be the registration date
     events = info["events"]
@@ -106,5 +115,6 @@ def main_security(url):
     typo_squatting(url, json_response_dict)
     combo_squatting(url, json_response_dict)
     sound_squatting(url, json_response_dict)
+    homograph_squatting(url, json_response_dict)
     detect_new_domains(url, json_response_dict)
     return json_response_dict
