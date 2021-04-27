@@ -160,8 +160,8 @@ class Homophones:
         if parts[-1] in ['fr', 'com', 'net', 'gr', 'be', 'uk']:
             return [parts[-2], parts[-1]]
 
-        else:
-            print("Didn't parse: %s " % domain)
+        # else:
+        #      print("Didn't parse: %s " % domain)
 
         return [parts[-3], '.'.join(parts[-2:])]
 
@@ -188,11 +188,11 @@ class Homophones:
         if len(''.join(candidates)) < domain_length:
             return (False, candidates)
 
-        print("REMOVE Candidates: %s" % candidates)
+        # print("REMOVE Candidates: %s" % candidates)
         for c in self.all_combinations(candidates):
             # Return if we are over the limit of our string
             if (len(c) * min_len_cand) > domain_length:
-                print("Over limit...")
+                # print("Over limit...")
                 return (False, candidates)
 
             # Check the time limit... If it's taking too long, just return
@@ -200,7 +200,7 @@ class Homophones:
             if (cnt % 5000) == 0:
                 c_time = time.time()
                 if (c_time - start_time) > self.MAX_TRY_SECS:
-                    print("Timeout on slow method")
+                    # print("Timeout on slow method")
                     return (False, candidates)
 
             c_attempt = ''.join(c)
@@ -281,7 +281,7 @@ class Homophones:
 
     def find_h_domains_single(self, domain):
 
-        print("%s" % domain)
+        # print("%s" % domain)
         sys.stdout.flush()
 
         # Used later on
@@ -301,7 +301,7 @@ class Homophones:
             candidate_words_original = candidate_words[:]
             # whitelist = ['ads','sex']
 
-            print("Candidate words: %s" % candidate_words)
+            # print("Candidate words: %s" % candidate_words)
 
             # Remove words that are contained in others
             # e.g. if "use" and "user" are both found in the same domain, drop the use, keep the user
@@ -326,7 +326,7 @@ class Homophones:
             for w in self.f7(delete_words):
                 candidate_words.remove(w)
 
-            print("Before: %s" % candidate_words)
+            # print("Before: %s" % candidate_words)
             sys.stdout.flush()
             # Clean up the candidates
             if len(candidate_words) > 2:
@@ -335,16 +335,16 @@ class Homophones:
 
                 # If it didn't work out, use the other method
                 if ''.join(candidate_words) != domain_wo_tld or '.'.join(candidate_words) != domain_wo_tld:
-                    print("called slow version")
+                    # print("called slow version")
                     (has_succeeded, n_candidate_words) = self.remove_unintended_words(
                         candidate_words_original, domain)
 
                     if has_succeeded == True:
                         candidate_words = n_candidate_words
 
-            print("After: %s" % candidate_words)
+            # print("After: %s" % candidate_words)
 
-        print("Candidates: %s" % candidate_words)
+        # print("Candidates: %s" % candidate_words)
         candidates = [
             homophone for homophone in self.homophones if homophone in candidate_words]
 
@@ -364,7 +364,7 @@ class Homophones:
 
                 s_domains.append((s_domain, c))
 
-                print("\tSSD: %s [%s -> %s] %s " % (domain, c, h, s_domain))
+                # print("\tSSD: %s [%s -> %s] %s " % (domain, c, h, s_domain))
 
         # # Check if we can have more!
         double_s_domains = []
@@ -383,10 +383,10 @@ class Homophones:
                             else:
                                 double_s_domains.append(double_s_domain)
 
-                            print("\tSSD: %s -> %s [%s -> %s] %s " %
-                                (domain, s_dom, c, h, double_s_domain))
+                             #print("\tSSD: %s -> %s [%s -> %s] %s " %
+                                #(domain, s_dom, c, h, double_s_domain))
 
-        print("")
+        # print("")
 
         return {
             "domain_name": domain,
@@ -414,7 +414,7 @@ class Homophones:
             # Lets focus only on PS+1 domains
             domain = '.'.join(self.cleanup_domain(domain))
 
-            print(self.find_h_domains_single(domain))
+            # print(self.find_h_domains_single(domain))
 
             if skip > 0:
                 skip -= 1
@@ -433,5 +433,5 @@ class Homophones:
                 break
 
     def get_homophones_length(self):
-        print(self.homophones)
+        # print(self.homophones)
         return len(self.homophones.keys())
