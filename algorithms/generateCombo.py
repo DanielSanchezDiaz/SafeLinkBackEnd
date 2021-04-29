@@ -8,9 +8,9 @@ def find_combosquatting(url):
     """
     
     domain = urlparse(url).netloc
-    false_trademark = domain.split('.')[1]
+    false_trademark = tldextract.extract.domain
     
-    print(f'DOMAIN: {domain} \nFALSE: {false_trademark}')
+    #print(f'DOMAIN: {domain} \nFALSE: {false_trademark}')
     return is_substring(false_trademark, 4)
 
 
