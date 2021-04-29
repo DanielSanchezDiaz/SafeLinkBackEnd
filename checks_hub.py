@@ -21,6 +21,8 @@ def typo_squatting(url, json_response_dict):
     result = db.queryTypoSquat(f_clean_domain)
     if result:
         json_response_dict["STATUS"] = "FAILED"
+    else:
+        result = []
     json_response_dict["typoSquatting"] = result
     # ADD RESULT TO DICT HERE
 
@@ -50,16 +52,25 @@ def sound_squatting(url, json_response_dict):
     result = db.querySoundSquat(f_clean_domain)
     if result:
         json_response_dict["STATUS"] = "FAILED"
+    else:
+        result = []
     json_response_dict["soundSquatting"] = result
 
 
 def homograph_squatting(url, json_response_dict):
+    # add check to see if url starts with xn-- (that's punycode)
+    # u"ẙ𑣎ụťụhѳ.com".encode("idna")
     parts = tldextract.extract(url)
     cl_domain = [parts.domain, '.' + parts.suffix]
     f_clean_domain = ''.join(cl_domain)
+    if f_clean_domain.startswith("xn--"):
+        f_clean_domain = f_clean_domain.encode("utf-8").decode("idna")
+    print("The clean domain is: "+f_clean_domain)
     result = db.queryHomoSquat(f_clean_domain)
     if result:
         json_response_dict["STATUS"] = "FAILED"
+    else:
+        result = []
     json_response_dict["homographSquatting"] = result
 
 
@@ -77,8 +88,11 @@ def detect_new_domains(url, json_response_dict):
     response = []
     numDays = 30
     for event in events:
+        if event['eventAction'] == 'expiration':
+            json_response_dict['expiration'] = event['eventDate']
         if event['eventAction'] == 'registration':
             date = event['eventDate']
+            json_response_dict['registration'] = date
             day, time = date.split('T')
             year, month, day = day.split('-')
             registrationDate = datetime.date(int(year), int(month), int(day))
@@ -104,6 +118,8 @@ def main_security(url):
             "comboSquatting": "[...]",
             "typoSquatting": "[...],
             "soundSquatting": "[...],
+            "homographSquatting": [...],
+            "New Domain": "[...]"
             ...
         }
     """
@@ -117,4 +133,5 @@ def main_security(url):
     sound_squatting(url, json_response_dict)
     homograph_squatting(url, json_response_dict)
     detect_new_domains(url, json_response_dict)
+    print(json_response_dict)
     return json_response_dict
