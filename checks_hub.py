@@ -106,7 +106,7 @@ def detect_new_domains(url, json_response_dict):
             if diff.days < numDays:
                 json_response_dict['STATUS'] = 'FAILED'
                 response = f"This domain was registered {diff.days} ago" #display something with this on frontend
-    json_response_dict['New Domain'] = response
+    json_response_dict['New Domain'] = [response]
 
 
 def main_security(url):
