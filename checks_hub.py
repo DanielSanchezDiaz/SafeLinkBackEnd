@@ -21,6 +21,7 @@ def typo_squatting(url, json_response_dict):
     result = db.queryTypoSquat(f_clean_domain)
     if result:
         json_response_dict["STATUS"] = "FAILED"
+        result = [result['domain']]
     else:
         result = []
     json_response_dict["typoSquatting"] = result
@@ -52,6 +53,7 @@ def sound_squatting(url, json_response_dict):
     result = db.querySoundSquat(f_clean_domain)
     if result:
         json_response_dict["STATUS"] = "FAILED"
+        result = [result['domain']]
     else:
         result = []
     json_response_dict["soundSquatting"] = result
@@ -69,6 +71,7 @@ def homograph_squatting(url, json_response_dict):
     result = db.queryHomoSquat(f_clean_domain)
     if result:
         json_response_dict["STATUS"] = "FAILED"
+        result = [result['domain']]
     else:
         result = []
     json_response_dict["homographSquatting"] = result
@@ -89,10 +92,10 @@ def detect_new_domains(url, json_response_dict):
     numDays = 30
     for event in events:
         if event['eventAction'] == 'expiration':
-            json_response_dict['expiration'] = event['eventDate']
+            json_response_dict['expiration'] = [event['eventDate']]
         if event['eventAction'] == 'registration':
             date = event['eventDate']
-            json_response_dict['registration'] = date
+            json_response_dict['registration'] = [date]
             day, time = date.split('T')
             year, month, day = day.split('-')
             registrationDate = datetime.date(int(year), int(month), int(day))
