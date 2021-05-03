@@ -6,6 +6,7 @@ import tldextract
 import db
 import requests
 import datetime
+import copy
 from algorithms.generateSound import Homophones
 
 
@@ -15,10 +16,8 @@ def typo_squatting(url, json_response_dict):
     possible typosquatted domains from the url and adds a key-value
     pair in the form {"typoSquatting": "[...]" }
     """
-    parts = tldextract.extract(url)
-    cl_domain = [parts.domain, '.' + parts.suffix]
-    f_clean_domain = ''.join(cl_domain)
-    result = db.queryTypoSquat(f_clean_domain)
+
+    result = db.queryTypoSquat(url)
     if result:
         json_response_dict["STATUS"] = "FAILED"
         result = [result['domain']]
@@ -47,10 +46,7 @@ def sound_squatting(url, json_response_dict):
     possible soundsquatted domains from the url and adds a key-value
     pair in the form {"comboSquatting": "[...]" }
     """
-    parts = tldextract.extract(url)
-    cl_domain = [parts.domain, '.' + parts.suffix]
-    f_clean_domain = ''.join(cl_domain)
-    result = db.querySoundSquat(f_clean_domain)
+    result = db.querySoundSquat(url)
     if result:
         json_response_dict["STATUS"] = "FAILED"
         result = [result['domain']]
@@ -81,12 +77,15 @@ def detect_new_domains(url, json_response_dict):
     # Things to do
         # cache result of rdap query, with date you got it
         # check in database if you have record for this already
+    info = requests.get("https://www.rdap.net/domain/"+url)
+    if info.status_code == 400:
+        json_response_dict['STATUS'] = 'FAILED'
+        json_response_dict['New Domain'] = ["rdap was unable to find information on this domain"]
+        json_response_dict['expiration'] = []
+        json_response_dict['registration'] = []
+        return
 
-    parts = tldextract.extract(url)
-    cl_domain = [parts.domain, '.' + parts.suffix]
-    f_clean_domain = ''.join(cl_domain)
-    info = requests.get("https://www.rdap.net/domain/"+f_clean_domain).json()
-    # This should be the registration date
+    info = info.json()
     events = info["events"]
     response = []
     numDays = 30
@@ -107,6 +106,9 @@ def detect_new_domains(url, json_response_dict):
                 json_response_dict['STATUS'] = 'FAILED'
                 response = f"This domain was registered {diff.days} ago" #display something with this on frontend
     json_response_dict['New Domain'] = [response]
+
+
+url_cache = {}
 
 
 def main_security(url):
@@ -130,11 +132,17 @@ def main_security(url):
     json_response_dict = {
         "STATUS": "PASSED"
     }
-
+    parts = tldextract.extract(url)
+    cl_domain = [parts.domain, '.' + parts.suffix]
+    url = ''.join(cl_domain)
+    if url in url_cache:
+        print(url_cache[url])
+        return url_cache[url]
     typo_squatting(url, json_response_dict)
     combo_squatting(url, json_response_dict)
     sound_squatting(url, json_response_dict)
     homograph_squatting(url, json_response_dict)
     detect_new_domains(url, json_response_dict)
+    url_cache[url] = copy.deepcopy(json_response_dict)
     print(json_response_dict)
     return json_response_dict
