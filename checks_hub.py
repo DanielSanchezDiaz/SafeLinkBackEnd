@@ -58,13 +58,8 @@ def sound_squatting(url, json_response_dict):
 def homograph_squatting(url, json_response_dict):
     # add check to see if url starts with xn-- (that's punycode)
     # u"ẙ𑣎ụťụhѳ.com".encode("idna")
-    parts = tldextract.extract(url)
-    cl_domain = [parts.domain, '.' + parts.suffix]
-    f_clean_domain = ''.join(cl_domain)
-    if f_clean_domain.startswith("xn--"):
-        f_clean_domain = f_clean_domain.encode("utf-8").decode("idna")
-    print("The clean domain is: "+f_clean_domain)
-    result = db.queryHomoSquat(f_clean_domain)
+    print("The clean domain is: "+url)
+    result = db.queryHomoSquat(url)
     if result:
         json_response_dict["STATUS"] = "FAILED"
         result = [result['domain']]
@@ -74,9 +69,6 @@ def homograph_squatting(url, json_response_dict):
 
 
 def detect_new_domains(url, json_response_dict):
-    # Things to do
-        # cache result of rdap query, with date you got it
-        # check in database if you have record for this already
     info = requests.get("https://www.rdap.net/domain/"+url)
     if info.status_code == 400:
         json_response_dict['STATUS'] = 'FAILED'
@@ -135,6 +127,10 @@ def main_security(url):
     parts = tldextract.extract(url)
     cl_domain = [parts.domain, '.' + parts.suffix]
     url = ''.join(cl_domain)
+
+    # handle puny code
+    if url.startswith("xn--"):
+        url = url.encode("utf-8").decode("idna")
     if url in url_cache:
         print(url_cache[url])
         return url_cache[url]
