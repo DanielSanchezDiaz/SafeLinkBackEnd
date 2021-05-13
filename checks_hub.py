@@ -70,7 +70,7 @@ def homograph_squatting(url, json_response_dict):
 
 def detect_new_domains(url, json_response_dict):
     info = requests.get("https://www.rdap.net/domain/"+url)
-    if info.status_code == 400:
+    if not info:
         json_response_dict['STATUS'] = 'FAILED'
         json_response_dict['New Domain'] = ["rdap was unable to find information on this domain"]
         json_response_dict['expiration'] = []
@@ -127,7 +127,10 @@ def main_security(url):
     parts = tldextract.extract(url)
     cl_domain = [parts.domain, '.' + parts.suffix]
     url = ''.join(cl_domain)
-
+    # check if url in top domains, don't need to check
+    topDomains = db.getTopDomains()
+    if url in topDomains:
+        return json_response_dict
     # handle puny code
     if url.startswith("xn--"):
         url = url.encode("utf-8").decode("idna")

@@ -25,5 +25,4 @@ def runTest():
         homoCol.replace_one({"_id": str(i)}, entry)
         print(squat)
 
-
 upDateDataBase()

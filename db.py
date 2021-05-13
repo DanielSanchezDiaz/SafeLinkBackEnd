@@ -3,6 +3,7 @@ from algorithms.generateTypo import ts_models
 from algorithms.generateSound import Homophones
 from idn_homographs_database.homograph import homograph
 from tranco import Tranco
+import tldextract
 
 client = pymongo.MongoClient(
     "mongodb+srv://DanielSanchez:SafeLink@topdomainnames.mj0ts.mongodb.net/DomainNames?retryWrites=true&w=majority",
@@ -52,20 +53,29 @@ def upDateDataBase():
             soundId += 1
         print("Soundsquatting done")
         # ******************************** Homograph Squatting
-        print("no homo")
-        parts = domain.split('.')
-        name = parts[0]
-        suffix = parts[1]
-        suffix = '.' + suffix
-        homograph_generator = homograph.generate_similar_strings(name)
-        print("Generating homos for " + name)
-        for j in range(10):
-            # Let's generate ten homograph squats
-            squat = next(homograph_generator) + suffix
-            entry = {"_id": str(homoId), "squat": squat, "domain": domain}
-            homoCol.save(entry)
-            print(f"The entry saved is {entry}")
-            homoId += 1
+        parts = tldextract.extract(domain)
+        name = parts.domain
+        suffix = '.' + parts.suffix
+        print("Generating homographs for " + name)
+        numSquats = 0
+        for i in range(len(name)):
+            char = name[i]
+            glyphs = homograph.generate_similar_chars(char)
+            if glyphs == '':
+                continue
+            while True:
+                try:
+                    glyph = next(glyphs)
+                    squat = list(name)
+                    squat[i] = glyph
+                    squat = "".join(squat)
+                    entry = {"_id": str(homoId), "squat": squat + suffix, "domain": domain}
+                    homoCol.save(entry)
+                    print(f"The entry saved is {entry}")
+                    homoId += 1
+                    numSquats += 1
+                except StopIteration:
+                    break
         i += 1
 
 
